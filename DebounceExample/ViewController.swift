@@ -9,6 +9,8 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    private let repository = NameRepository()
 
     override func viewDidLoad() {
         super.viewDidLoad()
