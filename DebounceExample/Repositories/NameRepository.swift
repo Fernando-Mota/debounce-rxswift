@@ -6,16 +6,28 @@
 //  Copyright © 2018 Fernando Mota e Silva. All rights reserved.
 //
 
-import Foundation
-
+import UIKit
+import RxSwift
 
 class NameRepository {
     
     private let db = DB()
     
-    func findByName(name: String) -> [String] {
-        return db.nameData.filter { (value) -> Bool in
-            name.contains(name)
+    private let dbSearchEngine = PublishSubject<[String]>()
+    
+    var observableData: Observable<[String]> {
+        get {
+            return dbSearchEngine.asObserver().delay(4, scheduler: MainScheduler.instance)
         }
+    }
+        
+    func findByName(name: String) {
+        dbSearchEngine.onNext(db.nameData.filter { (value) -> Bool in
+            return value.contains(name)
+        })
+    }
+    
+    func closeConnection() {
+        dbSearchEngine.onCompleted()
     }
 }
